@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: Release type
+        required: true
+        default: minor
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: 24.13.1
+
+      - name: Read extension
+        id: read_extension
+        run: |
+          VERSION=$(sed -n 's/version = \"\(.*\)\"/\1/p' < extension.toml)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Write extension
+        id: write_extension
+        run: |
+          VERSION=$(npx -y semver@7.7.4 ${{ steps.read_extension.outputs.version }} -i ${{ github.event.inputs.release_type }})
+          sed -i "s/^version = \"${{ steps.read_extension.outputs.version }}\"/version = \"$VERSION\"/" extension.toml
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add extension.toml
+          git commit -m "chore: release v${{ steps.write_extension.outputs.version }}"
+          git tag "v${{ steps.write_extension.outputs.version }}"
+          git push origin HEAD --tags
+
+      - name: Create release
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        with:
+          name: v${{ steps.write_extension.outputs.version }}
+          tag_name: v${{ steps.write_extension.outputs.version }}
+          generate_release_notes: true
