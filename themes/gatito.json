@@ -350,6 +350,12 @@
           },
           "variant": {
             "color": "#FAC863FF"
+          },
+          "diff.plus": {
+            "color": "#99C794FF"
+          },
+          "diff.minus": {
+            "color": "#E15A60FF"
           }
         }
       }
