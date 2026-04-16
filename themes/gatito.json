@@ -351,6 +351,9 @@
           "variant": {
             "color": "#FAC863FF"
           },
+          "tag.component.jsx": {
+            "color": "#FAC863FF"
+          },
           "diff.plus": {
             "color": "#99C794FF"
           },
