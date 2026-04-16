@@ -8,7 +8,7 @@ on:
 
 env:
   # https://github.com/zed-industries/zed/actions/workflows/publish_extension_cli.yml
-  ZED_EXTENSION_CLI_SHA: 03d8e9aee95ea6117d75a48bcac2e19241f6e667
+  ZED_EXTENSION_CLI_SHA: 1fa7f1a3ec28ea1eae6db2e937d7a538fb10c0c7
 
 jobs:
   test:
@@ -22,7 +22,7 @@ jobs:
 
       - name: Cache Zed extension CLI
         id: cache-zed-extension
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: zed-extension
           key: zed-extension-${{ env.ZED_EXTENSION_CLI_SHA }}
