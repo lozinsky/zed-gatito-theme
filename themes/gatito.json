@@ -142,6 +142,8 @@
         "version_control.modified": "#6699CCFF",
         "version_control.conflict": "#E15A60FF",
         "version_control.ignored": "#7F7F7FFF",
+        "version_control.conflict_marker.ours": "#99C79415",
+        "version_control.conflict_marker.theirs": "#6699CC15",
 
         "terminal.background": "#242B2EFF",
         "terminal.foreground": "#D4D4D4FF",
