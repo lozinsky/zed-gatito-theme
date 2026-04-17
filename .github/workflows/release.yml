@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      version: ${{ steps.write_extension.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -58,3 +60,11 @@ jobs:
           name: v${{ steps.write_extension.outputs.version }}
           tag_name: v${{ steps.write_extension.outputs.version }}
           generate_release_notes: true
+
+  publish:
+    name: Publish
+    needs: release
+    uses: ./.github/workflows/publish.yml
+    secrets: inherit
+    with:
+      tag: v${{ needs.release.outputs.version }}

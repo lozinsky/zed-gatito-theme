@@ -1,9 +1,11 @@
 name: Publish
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
 
 jobs:
   publish:
@@ -14,6 +16,7 @@ jobs:
         uses: huacnlee/zed-extension-action@8cd592a0d24e1e41157740f1a529aeabddc88a1b # v2.0.0
         with:
           extension-name: gatito-theme
+          tag: ${{ inputs.tag }}
           push-to: lozinsky/zed-extensions
         env:
           COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
