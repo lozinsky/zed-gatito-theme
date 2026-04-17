@@ -1,4 +1,4 @@
-name: Release
+name: Release and publish
 
 on:
   workflow_dispatch:
@@ -64,7 +64,13 @@ jobs:
   publish:
     name: Publish
     needs: release
-    uses: ./.github/workflows/publish.yml
-    secrets: inherit
-    with:
-      tag: v${{ needs.release.outputs.version }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish Zed extension
+        uses: huacnlee/zed-extension-action@8cd592a0d24e1e41157740f1a529aeabddc88a1b # v2.0.0
+        with:
+          extension-name: gatito-theme
+          tag: v${{ needs.release.outputs.version }}
+          push-to: lozinsky/zed-extensions
+        env:
+          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
