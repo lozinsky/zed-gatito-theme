@@ -79,6 +79,13 @@
         "editor.document_highlight.read_background": "#313A3DFF",
         "editor.document_highlight.write_background": "#313A3DFF",
 
+        "editor.diff_hunk.added.background": "#3D4F3B80",
+        "editor.diff_hunk.added.hollow_background": "#3D4F3B33",
+        "editor.diff_hunk.added.hollow_border": "#3D4F3B66",
+        "editor.diff_hunk.deleted.background": "#5E262980",
+        "editor.diff_hunk.deleted.hollow_background": "#5E262933",
+        "editor.diff_hunk.deleted.hollow_border": "#5E262966",
+
         "link_text.hover": "#6699CCFF",
 
         "conflict": "#E15A60FF",
