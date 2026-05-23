@@ -8,7 +8,7 @@ on:
 
 env:
   # https://github.com/zed-industries/zed/actions/workflows/publish_extension_cli.yml
-  ZED_EXTENSION_CLI_SHA: 1fa7f1a3ec28ea1eae6db2e937d7a538fb10c0c7
+  ZED_EXTENSION_CLI_SHA: 2a00db06ce6d01089bfafd207b6348078e980df9
 
 jobs:
   test:
