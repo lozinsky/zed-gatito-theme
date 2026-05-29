@@ -1,6 +1,6 @@
 id = "gatito-theme"
 name = "Gatito Theme"
-version = "0.1.1"
+version = "0.2.0"
 schema_version = 1
 authors = ["Pavel Lozinsky <pavel@lozinsky.dev>"]
 description = "Zed version of the popular Gatito Theme for VSCode."
