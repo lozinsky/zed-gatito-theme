@@ -8,7 +8,7 @@ on:
 
 env:
   # https://github.com/zed-industries/zed/actions/workflows/publish_extension_cli.yml
-  ZED_EXTENSION_CLI_SHA: 2a00db06ce6d01089bfafd207b6348078e980df9
+  ZED_EXTENSION_CLI_SHA: 9ee3c503a4bbbc6b4a0f8a789acca4871d773223
 
 jobs:
   test:
@@ -16,13 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
       - name: Cache Zed extension CLI
         id: cache-zed-extension
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: zed-extension
           key: zed-extension-${{ env.ZED_EXTENSION_CLI_SHA }}
