@@ -20,29 +20,30 @@ jobs:
     permissions:
       contents: write
     outputs:
-      version: ${{ steps.write_extension.outputs.version }}
+      version: ${{ steps.bump_extension.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - name: Setup Deno
+        uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
         with:
-          node-version: 24.13.1
+          deno-version: lts
 
-      - name: Read extension
-        id: read_extension
+      - name: Bump extension
+        id: bump_extension
         run: |
-          VERSION=$(sed -n 's/version = \"\(.*\)\"/\1/p' < extension.toml)
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          VERSION=$(deno eval "
+            import * as toml from 'jsr:@std/toml@1.0.11';
+            import * as semver from 'jsr:@std/semver@1.0.8';
 
-      - name: Write extension
-        id: write_extension
-        run: |
-          VERSION=$(npx -y semver@7.7.4 ${{ steps.read_extension.outputs.version }} -i ${{ github.event.inputs.release_type }})
-          sed -i "s/^version = \"${{ steps.read_extension.outputs.version }}\"/version = \"$VERSION\"/" extension.toml
+            const extension = toml.parse(Deno.readTextFileSync('extension.toml'));
+            extension.version = semver.format(semver.increment(semver.parse(extension.version), '${{ github.event.inputs.release_type }}'));
+            Deno.writeTextFileSync('extension.toml', toml.stringify(extension));
+            console.log(extension.version);
+          ")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Commit and push changes
@@ -50,15 +51,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add extension.toml
-          git commit -m "chore: release v${{ steps.write_extension.outputs.version }}"
-          git tag "v${{ steps.write_extension.outputs.version }}"
+          git commit -m "chore: release v${{ steps.bump_extension.outputs.version }}"
+          git tag "v${{ steps.bump_extension.outputs.version }}"
           git push origin HEAD --tags
 
       - name: Create release
         uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
-          name: v${{ steps.write_extension.outputs.version }}
-          tag_name: v${{ steps.write_extension.outputs.version }}
+          name: v${{ steps.bump_extension.outputs.version }}
+          tag_name: v${{ steps.bump_extension.outputs.version }}
           generate_release_notes: true
 
   publish:
