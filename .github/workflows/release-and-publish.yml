@@ -27,24 +27,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Deno
-        uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          deno-version: lts
+          bun-version: 1.4.4
 
       - name: Bump extension
         id: bump_extension
+        env:
+          RELEASE_TYPE: ${{ github.event.inputs.release_type }}
+          NPM_CONFIG_REGISTRY: https://npm.jsr.io
         run: |
-          VERSION=$(deno eval "
-            import * as toml from 'jsr:@std/toml@1.0.11';
-            import * as semver from 'jsr:@std/semver@1.0.8';
+          bun run - <<'EOF'
+          import * as toml from '@jsr/std__toml@1.0.11';
+          import * as semver from '@jsr/std__semver@1.0.8';
+          import fs from 'node:fs';
 
-            const extension = toml.parse(Deno.readTextFileSync('extension.toml'));
-            extension.version = semver.format(semver.increment(semver.parse(extension.version), '${{ github.event.inputs.release_type }}'));
-            Deno.writeTextFileSync('extension.toml', toml.stringify(extension));
-            console.log(extension.version);
-          ")
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          const extension = toml.parse(await Bun.file('extension.toml').text());
+          extension.version = semver.format(semver.increment(semver.parse(extension.version), process.env.RELEASE_TYPE));
+          await Bun.write('extension.toml', toml.stringify(extension));
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `version=${extension.version}\n`);
+          EOF
 
       - name: Commit and push changes
         run: |
